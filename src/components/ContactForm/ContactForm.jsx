@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
-import { UseSelector } from 'react-redux/es/hooks/useSelector';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/contacts/contactSlice';
+import { getContacts } from 'redux/contacts/contactSelectors';
+import { Notify } from 'notiflix';
 import css from './ContactForm.module.css';
 
-function ContactForm({ onSubmit }) {
+const ContactForm = () => {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
+  const contacts = useSelector(getContacts);
+  const dispatch = useDispatch();
 
   const handleChange = event => {
     const { name, value } = event.currentTarget;
@@ -22,11 +27,24 @@ function ContactForm({ onSubmit }) {
 
   const handleSubmit = event => {
     event.preventDefault();
-    const result = onSubmit({ name, number });
-    if (result) {
-      setName('');
-      setNumber('');
+
+    const numberAddIs = contacts.some(contact => contact.number === number);
+    if (numberAddIs) {
+      Notify.failure(`${name} is alredy in contacts`);
+      return;
+    } else if (numberAddIs) {
+      Notify.failure(`${number} is alredy in contacts`);
+      return;
     }
+
+    onAddContact({ name, number });
+    setName('');
+    setNumber('');
+  };
+
+  const onAddContact = ({ name, number }) => {
+    const action = addContact({ name, number });
+    dispatch(action);
   };
 
   return (
@@ -62,6 +80,6 @@ function ContactForm({ onSubmit }) {
       </button>
     </form>
   );
-}
+};
 
 export default ContactForm;
