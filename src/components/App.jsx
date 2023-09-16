@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { nanoid } from 'nanoid';
+import { useSelector } from 'react-redux';
+import { getContacts } from 'redux/contacts/contactSelectors';
 import ContactForm from './ContactForm';
 import ContactList from './ContactList';
 import Filter from './Filter';
@@ -7,66 +7,19 @@ import css from './App.module.css';
 import Notification from './Notification/Notification';
 
 function App() {
-  const [contacts, setContacts] = useState(
-    () => JSON.parse(window.localStorage.getItem('contacts')) ?? []
-  );
-
-  const [filter, setFilter] = useState('');
-
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
-
-  const isDublicate = name => {
-    const normalizedName = name.toLowerCase();
-    const result = contacts.find(({ name }) => {
-      return name.toLowerCase() === normalizedName;
-    });
-    return Boolean(result);
-  };
-  const addContact = ({ name, number }) => {
-    if (isDublicate(name)) {
-      alert(`${name} is already in contacts`);
-      return false;
-    }
-    const contact = {
-      id: nanoid(),
-      name: name,
-      number: number,
-    };
-
-    setContacts(prevContacts => [...prevContacts, contact]);
-    return true;
-  };
-  const changeFilter = event => {
-    setFilter(event.currentTarget.value.trim());
-  };
-
-  const getVisibleContacts = () => {
-    const normalizedFilter = filter.toLocaleLowerCase();
-    return contacts.filter(contact =>
-      contact.name.toLocaleLowerCase().includes(normalizedFilter)
-    );
-  };
-  const deleteContact = todoId => {
-    setContacts(prevState =>
-      prevState.filter(contact => contact.id !== todoId)
-    );
-  };
+  const contacts = useSelector(getContacts);
+  const isContacts = Boolean(contacts.length);
 
   return (
     <div className={css.phonebookSection}>
       <h1 className={css.phonebookTitle}>Phonebook</h1>
-      <ContactForm onSubmit={addContact} />
+      <ContactForm />
       <h2 className={css.phonebookContacts}>Contacts</h2>
       <div className={css.allContacts}>All contacts: {contacts.length}</div>
-      {contacts.length > 0 ? (
+      {isContacts ? (
         <div>
-          <Filter value={filter} onChange={changeFilter} />
-          <ContactList
-            contacts={getVisibleContacts()}
-            onDeleteContact={deleteContact}
-          />
+          <Filter />
+          <ContactList />
         </div>
       ) : (
         <Notification message="Contact list is empty" />
