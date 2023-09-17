@@ -1,5 +1,17 @@
+import { useSelector, useDispatch } from 'react-redux';
+import { getStatusFilter } from 'redux/filters/filtersSelectors';
+import { setStatusFilter } from 'redux/filters/filtersSlice';
+
 import css from './Filter.module.css';
-const Filter = ({ value, onChange }) => {
+
+const Filter = () => {
+  const filter = useSelector(getStatusFilter);
+  const dispatch = useDispatch();
+
+  const onChangeFilter = evt => {
+    dispatch(setStatusFilter(evt.currentTarget.value.trim()));
+  };
+
   return (
     <div className={css.filterSection}>
       <label className={css.filterLabel}>
@@ -8,8 +20,8 @@ const Filter = ({ value, onChange }) => {
           className={css.filterInput}
           type="name"
           name="filter"
-          value={value}
-          onChange={onChange}
+          value={filter}
+          onChange={onChangeFilter}
         />
       </label>
     </div>
