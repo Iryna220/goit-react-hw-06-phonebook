@@ -28,12 +28,12 @@ const ContactForm = () => {
   const handleSubmit = event => {
     event.preventDefault();
 
-    const NameAddIs = contacts.some(
+    const nameAddIs = contacts.some(
       contact => contact.name.toLowerCase() === name.toLowerCase()
     );
     const numberAddIs = contacts.some(contact => contact.number === number);
 
-    if (NameAddIs) {
+    if (nameAddIs) {
       Notify.failure(`${name} is alredy in contacts`);
       return;
     } else if (numberAddIs) {
@@ -66,6 +66,7 @@ const ContactForm = () => {
           required
         />
       </label>
+
       <label className={css.label}>
         Number
         <input
