@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import { removeContact } from 'redux/contacts/contactSlice';
 import css from './ContactItem.module.css';
 
-const ContactItem = ({ id, name, number, onDeleteContact }) => {
+const ContactItem = ({ id, name, number }) => {
   const dispatch = useDispatch();
 
   const onRemoveContact = payload => {

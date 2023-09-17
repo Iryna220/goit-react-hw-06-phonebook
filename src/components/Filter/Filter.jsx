@@ -18,7 +18,7 @@ const Filter = () => {
         Find contacts by name
         <input
           className={css.filterInput}
-          type="name"
+          type="text"
           name="filter"
           value={filter}
           onChange={onChangeFilter}
